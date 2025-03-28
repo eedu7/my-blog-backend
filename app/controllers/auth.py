@@ -9,6 +9,7 @@ from core.exceptions import BadRequestException, UnauthorizedException
 from core.security import JWTHandler, PasswordHandler
 from core.config import config
 
+
 class AuthController(BaseController[User]):
     def __init__(self, user_repository: UserRepository):
         super().__init__(model=User, repository=user_repository)
@@ -50,7 +51,7 @@ class AuthController(BaseController[User]):
         return Token(
             access_token=JWTHandler.encode(payload={"user_id": user.id}),
             refresh_token=JWTHandler.encode(payload={"sub": "refresh_token"}),
-            expiry_minutes=config.JWT_EXPIRE_MINUTES * 60 # Convert into seconds
+            expiry_minutes=config.JWT_EXPIRE_MINUTES * 60,  # Convert into seconds
         )
 
     async def refresh_token(self, refresh_token: str) -> Token:
@@ -60,6 +61,8 @@ class AuthController(BaseController[User]):
 
         return Token(
             access_token=JWTHandler.encode(payload={"user_id": token.get("user_id")}),
-            refresh_token=JWTHandler.encode(payload={"sub": "refresh_token", "user_id": token.get("user_id")}),
-            expiry_minutes=config.JWT_EXPIRE_MINUTES * 60 # Convert into seconds
+            refresh_token=JWTHandler.encode(
+                payload={"sub": "refresh_token", "user_id": token.get("user_id")}
+            ),
+            expiry_minutes=config.JWT_EXPIRE_MINUTES * 60,  # Convert into seconds
         )

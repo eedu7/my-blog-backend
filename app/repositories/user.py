@@ -1,5 +1,3 @@
-from sqlalchemy import Select
-from sqlalchemy.orm import joinedload
 
 from app.models import User
 from core.repository import BaseRepository
@@ -43,6 +41,5 @@ class UserRepository(BaseRepository[User]):
 
         if join_ is not None:
             return await self.all_unique(query)
-   
-        return await self._one_or_none(query)
 
+        return await self._one_or_none(query)

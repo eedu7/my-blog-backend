@@ -1,17 +1,13 @@
-from typing import Callable
 
 from fastapi import APIRouter, Depends
 
-from app.controllers import AuthController, UserController
-from app.models.user import User, UserPermission
+from app.controllers import AuthController
 from app.schemas.extras.token import Token
 from app.schemas.requests.auth import LoginUserRequest, RegisterUserRequest
 from app.schemas.responses.users import UserResponse
 from core.factory import Factory
-from core.fastapi.dependencies import AuthenticationRequired
 
 auth_routers = APIRouter()
-
 
 
 @auth_routers.post("/", status_code=201)

@@ -29,6 +29,7 @@ def on_auth_error(request: Request, exc: Exception):
         content={"error_code": error_code, "message": message},
     )
 
+
 async def exception_handler(request: Request, exc: Exception | CustomException):
     try:
         return JSONResponse(
@@ -67,7 +68,6 @@ def make_middleware() -> List[Middleware]:
         Middleware(ResponseLoggerMiddleware),
     ]
     return middleware
-
 
 
 def create_app() -> FastAPI:

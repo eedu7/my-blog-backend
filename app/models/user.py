@@ -3,7 +3,6 @@ from uuid import uuid4
 
 from sqlalchemy import BigInteger, Boolean, Column, Unicode
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 
 from core.database import Base
 from core.security.access_control import Allow, Everyone, RolePrincipal, UserPrincipal

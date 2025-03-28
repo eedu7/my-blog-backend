@@ -12,6 +12,7 @@ from core.fastapi.dependencies.permissions import Permissions
 
 user_router = APIRouter()
 
+
 @user_router.get("/", dependencies=[Depends(AuthenticationRequired)])
 async def get_users(
     user_controller: UserController = Depends(Factory().get_user_controller),
@@ -21,6 +22,7 @@ async def get_users(
 
     assert_access(resource=users)
     return users
+
 
 @user_router.get("/me", dependencies=[Depends(AuthenticationRequired)])
 def get_user(
