@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends
 
 from app.controllers import AuthController
-from app.schemas.extras.token import Token
+from app.schemas.extras.token import Token, RefreshTokenRequest
 from app.schemas.requests.auth import LoginUserRequest, RegisterUserRequest
 from app.schemas.responses.users import UserResponse
 from core.factory import Factory
@@ -30,3 +30,7 @@ async def login_user(
     return await auth_controller.login(
         email=login_user_request.email, password=login_user_request.password
     )
+
+@auth_routers.post("/refresh-token")
+async def refresh_token(refresh_token_request: RefreshTokenRequest, auth_controller: AuthController = Depends(Factory().get_auth_controller)) -> Token:
+    return await auth_controller.refresh_token(**refresh_token_request.model_dump())
