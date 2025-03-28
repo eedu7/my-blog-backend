@@ -5,10 +5,13 @@ import re
 from pydantic import BaseModel, EmailStr, field_validator, Field
 
 
-class RegisterUserRequest(BaseModel):
+class LoginUserRequest(BaseModel):
     email: EmailStr = Field(..., examples=["john.doe@example.com"])
-    password: str = Field(..., min_length=8, max_length=64, examples=["Password@123"])
-    username: str = Field(..., min_length=3, max_length=64, examples=["johndoe"])
+    password: str = Field(..., min_length=8, max_length=18, examples=["Password@123"])
+
+class RegisterUserRequest(LoginUserRequest):
+
+    username: str = Field(..., min_length=3, max_length=12, examples=["johndoe"])
 
     @field_validator("password")
     def password_must_contain_special_characters(cls, v):
@@ -41,6 +44,3 @@ class RegisterUserRequest(BaseModel):
         return v
 
 
-class LoginUserRequest(BaseModel):
-    email: EmailStr
-    password: str

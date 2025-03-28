@@ -1,10 +1,12 @@
-from typing import Callable
+from typing import Callable, Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, status
+from fastapi.responses import JSONResponse
 
 from app.controllers import UserController
 from app.models.user import User, UserPermission
 from app.schemas.responses.users import UserResponse
+from core.exceptions import BadRequestException, NotFoundException
 from core.factory import Factory
 from core.fastapi.dependencies import AuthenticationRequired
 from core.fastapi.dependencies.current_user import get_current_user
@@ -23,6 +25,28 @@ async def get_users(
     assert_access(resource=users)
     return users
 
+@user_router.get("/exist/")
+async def user_exist(username: Annotated[str | None, Query(min_length=3, max_length=12)] = None,
+                     email: Annotated[str | None, Query()] = None,
+                     user_controller: UserController = Depends(Factory().get_user_controller)):
+    if not username and not email:
+        raise BadRequestException("At least specify one `Query` parameter")
+    
+    user = None
+    if username:
+        user = await user_controller.get_by_username(username)
+    elif email:
+        user = await user_controller.get_by_email(email)
+    
+    if user:
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={
+                "message": "User found",
+                "exist": True,
+            }
+        )
+    raise NotFoundException("User not found")
 
 @user_router.get("/me", dependencies=[Depends(AuthenticationRequired)])
 def get_user(
