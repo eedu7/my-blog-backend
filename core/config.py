@@ -1,6 +1,8 @@
 from enum import StrEnum
+
 from pathlib import Path
 from pydantic_settings import BaseSettings
+
 from pydantic import PostgresDsn
 
 
@@ -21,12 +23,16 @@ class Config(BaseConfig):
     DEBUG: int = 0
     DEFAULT_LOCALE: str = "en_US"
     ENVIRONMENT: str = EnvironmentType.DEVELOPMENT
-    POSTGRES_URL: PostgresDsn = (
+    POSTGRES_URL: PostgresDsn | str = (
+        "postgresql+asyncpg://user:password@127.0.0.1:5432/db-name"
+    )
+    TEST_POSTGRES_URL: PostgresDsn | str = (
         "postgresql+asyncpg://user:password@127.0.0.1:5432/db-name"
     )
     JWT_SECRET_KEY: str = "super-secret-key"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 60 * 24
+    SHOW_SQL_ALCHEMY_QUERIES: int
 
 
 config: Config = Config()
