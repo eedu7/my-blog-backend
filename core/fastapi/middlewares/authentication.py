@@ -9,8 +9,6 @@ from starlette.requests import HTTPConnection
 
 from app.schemas.extras.current_user import CurrentUser
 from core.security import JWTHandler
-from core.config import config
-
 
 
 class AuthBackend(AuthenticationBackend):
