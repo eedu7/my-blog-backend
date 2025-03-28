@@ -33,6 +33,7 @@ class Config(BaseConfig):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 60 * 24
     SHOW_SQL_ALCHEMY_QUERIES: int
+    RELEASE_VERSION: str = "1.0.0"
 
 
 config: Config = Config()

@@ -50,6 +50,7 @@ class AuthController(BaseController[User]):
         return Token(
             access_token=JWTHandler.encode(payload={"user_id": user.id}),
             refresh_token=JWTHandler.encode(payload={"sub": "refresh_token"}),
+            expiry_minutes=config.JWT_EXPIRE_MINUTES * 60 # Convert into seconds
         )
 
     async def refresh_token(self, refresh_token: str) -> Token:
