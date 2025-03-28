@@ -46,7 +46,7 @@ class BaseRepository(Generic[ModelType]):
 
         if join_ is not None:
             return await self.all_unique(query)
-            
+
         return await self._all(query)
 
     async def get_by(
