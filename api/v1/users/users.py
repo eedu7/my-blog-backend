@@ -37,12 +37,20 @@ async def user_exist(username: Annotated[str | None, Query(min_length=3, max_len
         user = await user_controller.get_by_username(username)
     elif email:
         user = await user_controller.get_by_email(email)
+        
+    message = "User already exists."
+    
+    if username:
+        message = "username already exists."
+    elif email:
+        message = "email already exists."
+    
     
     if user:
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "message": "User found",
+                "message": message,
                 "exist": True,
             }
         )
