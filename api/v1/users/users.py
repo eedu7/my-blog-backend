@@ -46,7 +46,14 @@ async def user_exist(username: Annotated[str | None, Query(min_length=3, max_len
                 "exist": True,
             }
         )
-    raise NotFoundException("User not found")
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "message": "User not found",
+            "exist": False
+        }
+    )
+    
 
 @user_router.get("/me", dependencies=[Depends(AuthenticationRequired)])
 def get_user(
