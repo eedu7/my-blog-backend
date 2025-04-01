@@ -1,13 +1,16 @@
+from typing import Tuple
+
 from pydantic import EmailStr
 
 from app.models import User
 from app.repositories import UserRepository
 from app.schemas.extras.token import Token
+from app.schemas.responses.users import UserResponse
+from core.config import config
 from core.controller import BaseController
 from core.database import Propagation, Transactional
 from core.exceptions import BadRequestException, UnauthorizedException
 from core.security import JWTHandler, PasswordHandler
-from core.config import config
 
 
 class AuthController(BaseController[User]):
@@ -18,7 +21,7 @@ class AuthController(BaseController[User]):
     @Transactional(propagation=Propagation.REQUIRED)
     async def register(self, email: EmailStr, password: str, username: str) -> User:
         # Check if user exists with email
-        user = await self.user_repository.get_by_email(email)
+        user = await self.user_repository.get_by_email(str(email))
 
         if user:
             raise BadRequestException("User already exists with this email")
@@ -39,8 +42,8 @@ class AuthController(BaseController[User]):
             }
         )
 
-    async def login(self, email: EmailStr, password: str) -> Token:
-        user = await self.user_repository.get_by_email(email)
+    async def login(self, email: EmailStr, password: str) -> Tuple[Token, UserResponse]:
+        user = await self.user_repository.get_by_email(str(email))
 
         if not user:
             raise BadRequestException("Invalid credentials")
@@ -51,8 +54,8 @@ class AuthController(BaseController[User]):
         return Token(
             access_token=JWTHandler.encode(payload={"user_id": user.id}),
             refresh_token=JWTHandler.encode(payload={"sub": "refresh_token"}),
-            expiry_minutes=config.JWT_EXPIRE_MINUTES * 60,  # Convert into seconds
-        )
+            expiry_minutes=config.JWT_EXPIRE_MINUTES
+        ), UserResponse(**user.__dict__)
 
     async def refresh_token(self, refresh_token: str) -> Token:
         token = JWTHandler.decode(refresh_token)

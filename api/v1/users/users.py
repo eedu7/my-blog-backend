@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from app.controllers import UserController
 from app.models.user import User, UserPermission
 from app.schemas.responses.users import UserResponse
-from core.exceptions import BadRequestException, NotFoundException
+from core.exceptions import BadRequestException
 from core.factory import Factory
 from core.fastapi.dependencies import AuthenticationRequired
 from core.fastapi.dependencies.current_user import get_current_user
